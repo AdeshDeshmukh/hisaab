@@ -41,6 +41,12 @@
       "status": "done",
       "tier": "tests",
       "description": "1-paise remainder goes to CGST"
+    },
+    {
+      "id": "igst-28-cess-12",
+      "status": "done",
+      "tier": "tests",
+      "description": "28% IGST + 12% cess inter-state, tobacco"
     }
   ]
 }

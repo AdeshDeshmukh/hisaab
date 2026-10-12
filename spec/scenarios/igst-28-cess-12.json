@@ -1,0 +1,15 @@
+{
+  "id": "igst-28-cess-12",
+  "description": "28% IGST + 12% cess — inter-state tobacco supply, MH seller DL buyer",
+  "sellerState": "27",
+  "buyerState": "07",
+  "hsn": "2402",
+  "ratePercent": 28,
+  "cessPercent": 12,
+  "taxableAmountPaise": 10000,
+  "expectedCgstPaise": 0,
+  "expectedSgstPaise": 0,
+  "expectedIgstPaise": 2800,
+  "expectedCessPaise": 1200,
+  "expectedTotalPaise": 14000
+}
