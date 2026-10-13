@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { split } from './split.js';
 import { paise } from './money.js';
+import { roundHalfUp } from './round.js';
 
 describe('split — 18% intra-state', () => {
   it('scenario:cgst-sgst-18-intra — 10000 paise taxable becomes 900 CGST + 900 SGST', () => {
@@ -42,5 +43,66 @@ describe('split — 18% inter-state', () => {
     expect(result.igst, 'scenario:igst-18-standard IGST').toBe(1800);
     expect(result.cgst).toBe(0);
     expect(result.sgst).toBe(0);
+  });
+});
+
+describe('split — all four GST rates on ₹100 (10000 paise)', () => {
+  const cases = [
+    { rate: 5, total: 500, half: 250 },
+    { rate: 12, total: 1200, half: 600 },
+    { rate: 18, total: 1800, half: 900 },
+    { rate: 28, total: 2800, half: 1400 },
+  ] as const;
+  for (const c of cases) {
+    it(`intra ${c.rate}% → ${c.half}+${c.half}`, () => {
+      const r = split(paise(10000), c.rate, true);
+      expect(r.cgst).toBe(c.half);
+      expect(r.sgst).toBe(c.half);
+      expect(r.igst).toBe(0);
+      expect(r.cess).toBe(0);
+    });
+    it(`inter ${c.rate}% → IGST ${c.total}`, () => {
+      const r = split(paise(10000), c.rate, false);
+      expect(r.igst).toBe(c.total);
+      expect(r.cgst).toBe(0);
+      expect(r.sgst).toBe(0);
+      expect(r.cess).toBe(0);
+    });
+  }
+});
+
+describe('split — conservation invariant', () => {
+  const taxables = [100, 111, 1001, 9999];
+  const rates = [5, 12, 18, 28];
+  for (const t of taxables) {
+    for (const rate of rates) {
+      it(`intra: cgst+sgst == roundHalfUp(${t}*${rate}%)`, () => {
+        const r = split(paise(t), rate, true);
+        expect(r.cgst + r.sgst).toBe(roundHalfUp((t * rate) / 100));
+        expect(r.igst).toBe(0);
+      });
+      it(`inter: igst == roundHalfUp(${t}*${rate}%)`, () => {
+        const r = split(paise(t), rate, false);
+        expect(r.igst).toBe(roundHalfUp((t * rate) / 100));
+        expect(r.cgst).toBe(0);
+        expect(r.sgst).toBe(0);
+      });
+    }
+  }
+});
+
+describe('split — odd-paise drift', () => {
+  it('5% on ₹1 (100 paise) intra → CGST 3 + SGST 2', () => {
+    const r = split(paise(100), 5, true);
+    // total = 5, half = 2, remainder = 1 → CGST gets +1
+    expect(r.cgst).toBe(3);
+    expect(r.sgst).toBe(2);
+    expect(r.igst).toBe(0);
+  });
+  it('5% on ₹1 (100 paise) inter → IGST 5', () => {
+    const r = split(paise(100), 5, false);
+    expect(r.igst).toBe(5);
+    expect(r.cgst).toBe(0);
+    expect(r.sgst).toBe(0);
   });
 });
