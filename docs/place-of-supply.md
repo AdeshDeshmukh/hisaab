@@ -24,9 +24,34 @@ Seller and buyer are in **different states or UTs**. Tax is levied as IGST (no C
 
 Matching scenario: `igst-18-standard`
 
+## Worked examples
+
+The two example below walk through a compelte invoice calculation . Both use a taxable amount of ₹50000 and GST rate of 18%.
+
+## Intra-state supply
+
+Seller and buyer are in the **same state or UT**. Tax is split equally between CGST and SGST.
+
+**Example:** Seller in Maharashtra (27), buyer in Maharashtra (27), 18% rate, ₹50000 taxable.
+- CGST: ₹ 50000 * 9% = ₹4500.
+- SGST: ₹ 50000 * 9% = ₹4500.
+- IGST: ₹0
+- Total Invoice: ₹59000.
+
+## Inter-state supply
+
+Seller and buyer are in **different states or UTs**. Tax is levied as IGST (no CGST/SGST split).
+
+**Example:** Seller in Maharashtra (27), buyer in Delhi (07), 18% rate, ₹100 taxable.
+- CGST: ₹0
+- SGST: ₹0
+- IGST: ₹50000 *18% = ₹9000.
+- Total Invoice: ₹59000.
+
 ## Union Territories
 
-For GST purposes, UTs without a legislature (Delhi, Chandigarh, etc.) follow the same rules as states for place-of-supply determination. However, the "state" tax in a UT is UTGST, not SGST — see state code 07 (Delhi, kind: ut) in `packages/core/src/states.ts`.
+For GST purposes, UTs without a legislature (Delhi, Chandigarh, etc.) follow the same rules as states for place-of-supply determination. However, the "state" tax in a UT is UTGST, not SGST — see state code 07 (Delhi, kind : ut) in `packages/core/src/states.ts`.
+
 
 ## Not legal advice
 
