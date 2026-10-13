@@ -42,7 +42,7 @@ Seller and buyer are in the **same state or UT**. Tax is split equally between C
 
 Seller and buyer are in **different states or UTs**. Tax is levied as IGST (no CGST/SGST split).
 
-**Example:** Seller in Maharashtra (27), buyer in Delhi (07), 18% rate, ₹100 taxable.
+**Example:** Seller in Maharashtra (27), buyer in Delhi (07), 18% rate, ₹50000 taxable.
 - CGST: ₹0
 - SGST: ₹0
 - IGST: ₹50000 *18% = ₹9000.
