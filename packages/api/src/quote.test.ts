@@ -14,7 +14,7 @@ describe('POST /quote', () => {
       }),
     });
     expect(res.status).toBe(400);
-    const body = await res.json() as Record<string, unknown>;
+    const body = (await res.json()) as Record<string, unknown>;
     expect(body['code']).toBeTruthy();
     expect(body['stack']).toBeUndefined();
   });
@@ -31,7 +31,7 @@ describe('POST /quote', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const body = await res.json() as Record<string, unknown>;
+    const body = (await res.json()) as Record<string, unknown>;
     expect(body['cgstPaise']).toBe(900);
     expect(body['sgstPaise']).toBe(900);
     expect(body['igstPaise']).toBe(0);
@@ -49,5 +49,54 @@ describe('POST /quote', () => {
       }),
     });
     expect(res.status).toBe(200);
+  });
+
+  it('returns 400 with code when sellerStateCode is missing', async () => {
+    const res = await app.request('/quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        buyerStateCode: '27',
+        ratePercent: 18,
+        taxableAmountPaise: 10000,
+      }),
+    });
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as Record<string, unknown>;
+    expect(body['code']).toBe('MISSING_FIELD');
+    expect(body['stack']).toBeUndefined();
+  });
+
+  it('returns 400 with code when buyerStateCode is missing', async () => {
+    const res = await app.request('/quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sellerStateCode: '27',
+        ratePercent: 18,
+        taxableAmountPaise: 10000,
+      }),
+    });
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as Record<string, unknown>;
+    expect(body['code']).toBe('MISSING_FIELD');
+    expect(body['stack']).toBeUndefined();
+  });
+
+  it('returns 400 for invalid ratePercent -5', async () => {
+    const res = await app.request('/quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sellerStateCode: '27',
+        buyerStateCode: '27',
+        ratePercent: -5,
+        taxableAmountPaise: 10000,
+      }),
+    });
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as Record<string, unknown>;
+    expect(body['code']).toBe('INVALID_RATE');
+    expect(body['stack']).toBeUndefined();
   });
 });
