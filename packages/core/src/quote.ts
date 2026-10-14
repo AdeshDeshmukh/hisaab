@@ -21,7 +21,7 @@ export type QuoteResult = {
 };
 
 export type QuoteError = {
-  code: 'UNKNOWN_STATE' | 'VALIDATION_ERROR';
+  code: 'UNKNOWN_SELLER_STATE' | 'UNKNOWN_BUYER_STATE' | 'VALIDATION_ERROR';
   message: string;
   field?: string;
 };
@@ -33,7 +33,11 @@ export function quote(
   if (!seller) {
     return {
       ok: false,
-      error: { code: 'UNKNOWN_STATE', message: `Unknown seller state: ${input.sellerStateCode}`, field: 'sellerStateCode' },
+      error: {
+        code: 'UNKNOWN_SELLER_STATE',
+        message: `Unknown seller state: ${input.sellerStateCode}`,
+        field: 'sellerStateCode',
+      },
     };
   }
 
@@ -41,7 +45,11 @@ export function quote(
   if (!buyer) {
     return {
       ok: false,
-      error: { code: 'UNKNOWN_STATE', message: `Unknown buyer state: ${input.buyerStateCode}`, field: 'buyerStateCode' },
+      error: {
+        code: 'UNKNOWN_BUYER_STATE',
+        message: `Unknown buyer state: ${input.buyerStateCode}`,
+        field: 'buyerStateCode',
+      },
     };
   }
 
