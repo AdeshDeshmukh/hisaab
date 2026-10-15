@@ -35,3 +35,11 @@ export function lookupHsnChapter(hsn: string): string | null {
   const prefix = hsn.substring(0, 2);
   return HSN_CHAPTERS.get(prefix) ?? null;
 }
+
+/**
+ * Plain-language alias of lookupHsnChapter.
+ * Same 2-digit prefix lookup, friendlier name.
+ */
+export function lookupHsnDescription(hsn: string): string | null {
+  return lookupHsnChapter(hsn);
+}

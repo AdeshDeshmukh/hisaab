@@ -7,7 +7,7 @@ export { validateLineItem } from './validate.js';
 export type { ValidationError } from './validate.js';
 export { lookupState, isIntraState } from './states.js';
 export type { StateInfo, StateKind } from './states.js';
-export { lookupHsnChapter } from './hsn.js';
+export { lookupHsnChapter, lookupHsnDescription } from './hsn.js';
 export { loadRegistry, findByStatus } from './registry.js';
 export type { Registry, ScenarioMeta, ScenarioStatus } from './registry.js';
 export { quote } from './quote.js';
