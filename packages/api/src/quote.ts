@@ -22,6 +22,13 @@ app.post('/quote', async (c) => {
     }
   }
 
+  if (typeof rate !== 'number' || isNaN(rate) || rate < 0 || rate > 100) {
+    return c.json(
+      { code: 'INVALID_RATE', message: 'ratePercent must be a number between 0 and 100' },
+      400,
+    );
+  }
+
   const sellerState = input['sellerStateCode'] as string | undefined;
   const buyerState = input['buyerStateCode'] as string | undefined;
 
@@ -40,14 +47,25 @@ app.post('/quote', async (c) => {
     );
   }
 
-  const result = quote({
-    sellerStateCode: sellerState,
-    buyerStateCode: buyerState,
-    hsn: (input['hsn'] as string) || '8471',
-    ratePercent: rate as number,
-    taxableAmountPaise: paise(taxableAmount),
-    cessPercent: (input['cessPercent'] as number) ?? 0,
-  });
+  let result: ReturnType<typeof quote>;
+  try {
+    result = quote({
+      sellerStateCode: sellerState,
+      buyerStateCode: buyerState,
+      hsn: (input['hsn'] as string) || '8471',
+      ratePercent: rate as number,
+      taxableAmountPaise: paise(taxableAmount),
+      cessPercent: (input['cessPercent'] as number) ?? 0,
+    });
+  } catch (err) {
+    if (err instanceof RangeError) {
+      return c.json({ code: 'INVALID_RATE', message: (err as Error).message }, 400);
+    }
+    if (err instanceof TypeError) {
+      return c.json({ code: 'INVALID_AMOUNT', message: (err as Error).message }, 400);
+    }
+    throw err;
+  }
 
   if (!result.ok) {
     return c.json({ code: result.error.code, message: result.error.message }, 400);
