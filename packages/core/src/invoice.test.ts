@@ -90,6 +90,14 @@ describe('createInvoice — multi-rate', () => {
     expect(result.invoice.lines[1]?.ratePercent).toBe(12);
   });
 
+  it('retains the seller and buyer state pair', () => {
+    const result = createInvoice(toItems(inter));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.invoice.sellerStateCode).toBe('27');
+    expect(result.invoice.buyerStateCode).toBe('07');
+  });
+
   it('each line total equals its taxable plus its own taxes', () => {
     const result = createInvoice(toItems(inter));
     expect(result.ok).toBe(true);

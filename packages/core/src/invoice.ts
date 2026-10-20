@@ -22,6 +22,8 @@ export type InvoiceLine = {
 };
 
 export type Invoice = {
+  sellerStateCode: string;
+  buyerStateCode: string;
   lines: InvoiceLine[];
   subtotal: Paise;
   totalCgst: Paise;
@@ -114,6 +116,8 @@ export function createInvoice(
   return {
     ok: true,
     invoice: {
+      sellerStateCode: first.sellerStateCode,
+      buyerStateCode: first.buyerStateCode,
       lines,
       subtotal: paise(subtotal),
       totalCgst: paise(totalCgst),
